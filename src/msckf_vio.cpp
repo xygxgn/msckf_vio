@@ -180,6 +180,7 @@ bool MsckfVio::createRosIO() {
   odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 10);
   feature_pub = nh.advertise<sensor_msgs::PointCloud2>(
       "feature_point_cloud", 10);
+  extrinsic_pub = nh.advertise<nav_msgs::Odometry>("extrinsic", 10);
 
   reset_srv = nh.advertiseService("reset",
       &MsckfVio::resetCallback, this);
@@ -1385,6 +1386,15 @@ void MsckfVio::publish(const ros::Time& time) {
           T_b_w_tf, time, fixed_frame_id, child_frame_id));
   }
 
+  // Publish the extrinsic
+  nav_msgs::Odometry extrinsic_msg;
+  extrinsic_msg.header.stamp = time;
+  Eigen::Isometry3d T_cam0_imu;
+  T_cam0_imu.linear() = state_server.imu_state.R_imu_cam0.transpose();
+  T_cam0_imu.translation() = state_server.imu_state.t_cam0_imu;
+  tf::poseEigenToMsg(T_cam0_imu, extrinsic_msg.pose.pose);
+  extrinsic_pub.publish(extrinsic_msg);
+  
   // Publish the odometry
   nav_msgs::Odometry odom_msg;
   odom_msg.header.stamp = time;
