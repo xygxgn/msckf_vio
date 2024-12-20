@@ -3,13 +3,10 @@
   <arg name="robot" default="firefly_sbx"/>
   <arg name="fixed_frame_id" default="world"/>
   <arg name="calibration_file"
-    default="$(find msckf_vio)/config/camchain-imucam-euroc.yaml"/>
-  <arg name="rviz_path" default = "$(find msckf_vio)/rviz/rviz_euroc_config.rviz" />
-
-  <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(arg rviz_path)" />
+    default="$(find msckf_vio)/config/camchain-imucam-d435i.yaml"/>
 
   <!-- Image Processor Nodelet  -->
-  <include file="$(find msckf_vio)/launch/image_processor_euroc.launch">
+  <include file="$(find msckf_vio)/launch/image_processor_d435i.launch">
     <arg name="robot" value="$(arg robot)"/>
     <arg name="calibration_file" value="$(arg calibration_file)"/>
   </include>
@@ -38,8 +35,8 @@
       <param name="feature/config/translation_threshold" value="-1.0"/>
 
       <!-- These values should be standard deviation -->
-      <param name="noise/gyro" value="0.005"/>
-      <param name="noise/acc" value="0.05"/>
+      <param name="noise/gyro" value="0.03817260695460034"/>
+      <param name="noise/acc" value="0.2365908359812622"/>
       <param name="noise/gyro_bias" value="0.001"/>
       <param name="noise/acc_bias" value="0.01"/>
       <param name="noise/feature" value="0.035"/>
@@ -55,7 +52,7 @@
       <param name="initial_covariance/extrinsic_rotation_cov" value="3.0462e-4"/>
       <param name="initial_covariance/extrinsic_translation_cov" value="2.5e-5"/>
 
-      <remap from="~imu" to="/imu0"/>
+      <remap from="~imu" to="/camera/imu"/>
       <remap from="~features" to="image_processor/features"/>
 
     </node>
