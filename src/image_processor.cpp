@@ -213,10 +213,40 @@ void ImageProcessor::stereoCallback(
   //cout << "==================================" << endl;
 
   // Get the current image.
-  cam0_curr_img_ptr = cv_bridge::toCvShare(cam0_img,
-      sensor_msgs::image_encodings::MONO8);
-  cam1_curr_img_ptr = cv_bridge::toCvShare(cam1_img,
-      sensor_msgs::image_encodings::MONO8);
+  if (cam0_img->encoding == "8UC1")
+  {
+      sensor_msgs::Image img;
+      img.header = cam0_img->header;
+      img.height = cam0_img->height;
+      img.width = cam0_img->width;
+      img.is_bigendian = cam0_img->is_bigendian;
+      img.step = cam0_img->step;
+      img.data = cam0_img->data;
+      img.encoding = "mono8";
+      cam0_curr_img_ptr = cv_bridge::toCvCopy(img, sensor_msgs::image_encodings::MONO8);
+  }
+  else
+  {
+    cam0_curr_img_ptr = cv_bridge::toCvShare(cam0_img,
+        sensor_msgs::image_encodings::MONO8);
+  }
+  if (cam1_img->encoding == "8UC1")
+  {
+      sensor_msgs::Image img;
+      img.header = cam1_img->header;
+      img.height = cam1_img->height;
+      img.width = cam1_img->width;
+      img.is_bigendian = cam1_img->is_bigendian;
+      img.step = cam1_img->step;
+      img.data = cam1_img->data;
+      img.encoding = "mono8";
+      cam1_curr_img_ptr = cv_bridge::toCvCopy(img, sensor_msgs::image_encodings::MONO8);
+  }
+  else
+  {
+    cam1_curr_img_ptr = cv_bridge::toCvShare(cam1_img,
+        sensor_msgs::image_encodings::MONO8);
+  }
 
   // Build the image pyramids once since they're used at multiple places
   createImagePyramids();
