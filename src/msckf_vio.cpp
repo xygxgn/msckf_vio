@@ -1432,6 +1432,27 @@ void MsckfVio::publish(const ros::Time& time) {
 
   odom_pub.publish(odom_msg);
 
+
+  static std::string traj_output_path = "/home/lilabws001/exam_ws/msckf/src/msckf_vio/output/result.txt";
+
+  static bool tmp_flag = false;
+  if (tmp_flag == false)
+  {
+    std::ofstream traj_fout(traj_output_path, std::ios::out);
+    traj_fout << "#timestamp(s) tx ty tz qx qy qz qw" << std::endl;
+    traj_fout.close();
+    tmp_flag = true;
+  }
+  else
+  {
+    static std::ofstream traj_fout(traj_output_path, std::ios::app);
+    traj_fout.setf(std::ios::fixed, std::ios::floatfield);
+    traj_fout << std::setprecision(6) << time.toSec()  << " " << std::setprecision(8) 
+      << odom_msg.pose.pose.position.x << " " << odom_msg.pose.pose.position.y << " " << odom_msg.pose.pose.position.z << " "
+      << odom_msg.pose.pose.orientation.x << " " << odom_msg.pose.pose.orientation.y << " " << odom_msg.pose.pose.orientation.z << " " << odom_msg.pose.pose.orientation.w << std::endl;
+  }
+
+
   // Publish the 3D positions of the features that
   // has been initialized.
   boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > feature_msg_ptr(
