@@ -32,7 +32,7 @@
   - ***The version of the OpenCV must be consistent with the version of OpenCV used by cv-bridge***
 
 ### Run
-- **download the source package**
+- **launch the package**
   - `cd ~/catkin_ws`
   - `source devel/setup.bash`
   - `roslaunch msckf_vio msckf_vio_euroc.launch`
